@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rishi-rijal/restuarant-management/database"
 	"github.com/rishi-rijal/restuarant-management/routes"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
