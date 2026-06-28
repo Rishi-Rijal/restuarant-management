@@ -7,12 +7,12 @@ import (
 )
 
 type Menu struct {
-	ID         bson.ObjectID `bson:"_id"`
-	Name       string        `json:"name" validate:"required"`
-	Category   string        `json:"category" validate:"required"`
-	Start_date *time.Time    `json:"start_date"`
-	End_date   *time.Time    `json:"end_date"`
-	Created_at time.Time     `json:"created_at"`
-	Updated_at time.Time     `json:"updated_at"`
-	Menu_id    string        `json:"food_id"`
+	ID        bson.ObjectID `bson:"_id"`
+	Name      string        `json:"name" validate:"required"`
+	Category  string        `json:"category" validate:"required"`
+	StartDate *time.Time    `json:"start_date"`
+	EndDate   *time.Time    `json:"end_date"`
+	CreatedAt time.Time     `json:"created_at"`
+	UpdatedAt time.Time     `json:"updated_at"`
+	MenuID    string        `json:"food_id"`
 }
