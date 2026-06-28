@@ -24,7 +24,7 @@ var menuCollection *mongo.Collection = database.OpenCollection(database.Client, 
 func GetFoods() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
-		result, err := menuCollection.Find(context.TODO(), bson.M{})
+		result, err := menuCollection.Find(ctx, bson.M{})
 
 		defer cancel()
 		if err != nil {
