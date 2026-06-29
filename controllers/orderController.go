@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"errors"
 	"log"
 	"net/http"
 	"time"
@@ -147,4 +148,20 @@ func UpdateOrder() gin.HandlerFunc {
 		}
 		c.JSON(http.StatusOK, result)
 	}
+}
+
+func OrderItemOrderCreator(order models.Order) (string, error) {
+	ctx, err := context.WithTimeout(context.Background(), 10*time.Second)
+	if err != nil {
+		return "", errors.New("something went wrong")
+	}
+
+	order.CreatedAt = time.Now()
+	order.UpdatedAt = time.Now()
+	order.ID = bson.NewObjectID()
+	order.OrderID = order.ID.Hex()
+
+	orderCollection.InsertOne(ctx, order)
+
+	return order.OrderID, nil
 }
