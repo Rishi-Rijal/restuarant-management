@@ -171,7 +171,7 @@ func UpdateInvoice() gin.HandlerFunc {
 
 		result, err := invoiceCollection.UpdateOne(
 			ctx, filter, bson.D{
-				{"$set", updateObj},
+				{Key: "$set", Value: updateObj},
 			},
 
 			opt,
