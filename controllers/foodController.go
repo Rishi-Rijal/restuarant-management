@@ -1,8 +1,9 @@
+// Package controller provides all the controller functions that are required for the
+// food endpoints
 package controller
 
 import (
 	"context"
-	"fmt"
 	"math"
 	"net/http"
 	"strconv"
@@ -41,10 +42,36 @@ func GetFoods() gin.HandlerFunc {
 
 		startIndex := (page - 1) * recordPerPage
 
-		matchState := bson.D{{"$match", bson.D{{}}}}
-		groupState := bson.D{{"$group", bson.D{{"_id", bson.D{{"_id", nil}}}, {"totalCount", bson.D{{"$sum", 1}}}, {"data", bson.D{{"$push", "$$ROOT"}}}}}}
+		matchState := bson.D{{
+			Key: "$match", Value: bson.D{{}},
+		}}
+		groupState := bson.D{
+			{
+				Key: "$group", Value: bson.D{
+					{
+						Key: "_id", Value: bson.D{
+							{Key: "_id", Value: nil},
+						},
+					},
+					{
+						Key: "totalCount", Value: bson.D{{Key: "$sum", Value: 1}},
+					},
+					{
+						Key: "data", Value: bson.D{
+							{Key: "$push", Value: "$$ROOT"},
+						},
+					},
+				},
+			},
+		}
 
-		projectStage := bson.D{{"$project", bson.D{{"_id", 0}, {"totalcount", 1}, {"foodItems", bson.D{{"$slice", []interface{}{"$data", startIndex, recordPerPage}}}}}}}
+		projectStage := bson.D{{Key: "$project", Value: bson.D{
+			{Key: "_id", Value: 0},
+			{Key: "totalcount", Value: 1},
+			{Key: "foodItems", Value: bson.D{
+				{Key: "$slice", Value: []interface{}{"$data", startIndex, recordPerPage}},
+			}},
+		}}}
 
 		result, err := foodCollection.Aggregate(ctx, mongo.Pipeline{
 			matchState, groupState, projectStage,
@@ -107,7 +134,7 @@ func CreateFood() gin.HandlerFunc {
 
 		err := menuCollection.FindOne(ctx, bson.M{"menu_id": food.MenuID}).Decode(&menu)
 		if err != nil {
-			msg := fmt.Sprintf("menu was not found")
+			msg := "menu was not found"
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 			return
 		}
@@ -179,7 +206,7 @@ func UpdateFood() gin.HandlerFunc {
 			ctx,
 			filter,
 			bson.D{
-				{"$set", updateObj},
+				{Key: "$set", Value: updateObj},
 			},
 			opt,
 		)
