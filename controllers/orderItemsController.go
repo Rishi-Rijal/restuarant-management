@@ -267,24 +267,24 @@ func UpdateOrderItem() gin.HandlerFunc {
 		var updateObj bson.D
 
 		if orderItem.UnitPrice != nil {
-			updateObj = append(updateObj, bson.E{"unit_price", orderItem.UnitPrice})
+			updateObj = append(updateObj, bson.E{Key: "unit_price", Value: orderItem.UnitPrice})
 		}
 
 		if orderItem.Quantity != nil {
-			updateObj = append(updateObj, bson.E{"quantity", orderItem.Quantity})
+			updateObj = append(updateObj, bson.E{Key: "quantity", Value: orderItem.Quantity})
 		}
 
 		if orderItem.FoodID != nil {
-			updateObj = append(updateObj, bson.E{"food_id", orderItem.FoodID})
+			updateObj = append(updateObj, bson.E{Key: "food_id", Value: orderItem.FoodID})
 		}
 
 		orderItem.UpdatedAt = time.Now()
 
-		updateObj = append(updateObj, bson.E{"updated_at", orderItem.UpdatedAt})
+		updateObj = append(updateObj, bson.E{Key: "updated_at", Value: orderItem.UpdatedAt})
 
 		opt := options.UpdateOne().SetUpsert(true)
 
-		result, err := orderItemCollection.UpdateOne(ctx, filter, bson.D{{"$set", updateObj}},
+		result, err := orderItemCollection.UpdateOne(ctx, filter, bson.D{{Key: "$set", Value: updateObj}},
 			opt)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "order item update failed"})
