@@ -29,7 +29,7 @@ func GetFoods() gin.HandlerFunc {
 		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 		defer cancel()
 
-		recordPerPage, err := strconv.Atoi(c.Query("recordPerPage"))
+		recordPerPage, err := strconv.Atoi(c.Query("record_per_page"))
 
 		if err != nil || recordPerPage < 1 {
 			recordPerPage = 10
@@ -54,7 +54,7 @@ func GetFoods() gin.HandlerFunc {
 						},
 					},
 					{
-						Key: "totalCount", Value: bson.D{{Key: "$sum", Value: 1}},
+						Key: "total_count", Value: bson.D{{Key: "$sum", Value: 1}},
 					},
 					{
 						Key: "data", Value: bson.D{
@@ -67,8 +67,8 @@ func GetFoods() gin.HandlerFunc {
 
 		projectStage := bson.D{{Key: "$project", Value: bson.D{
 			{Key: "_id", Value: 0},
-			{Key: "totalcount", Value: 1},
-			{Key: "foodItems", Value: bson.D{
+			{Key: "total_count", Value: 1},
+			{Key: "food_items", Value: bson.D{
 				{Key: "$slice", Value: []interface{}{"$data", startIndex, recordPerPage}},
 			}},
 		}}}
@@ -184,21 +184,21 @@ func UpdateFood() gin.HandlerFunc {
 		}
 
 		if food.FoodImage != nil {
-			updateObj = append(updateObj, bson.E{Key: "foodImage", Value: food.FoodImage})
+			updateObj = append(updateObj, bson.E{Key: "food_image", Value: food.FoodImage})
 		}
 
 		if food.MenuID != nil {
-			err := menuCollection.FindOne(ctx, bson.M{"menuID": food.MenuID}).Decode(&menu)
+			err := menuCollection.FindOne(ctx, bson.M{"menu_id": food.MenuID}).Decode(&menu)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Menu was not found"})
 				return
 			}
 
-			updateObj = append(updateObj, bson.E{Key: "menuID", Value: menu.ID})
+			updateObj = append(updateObj, bson.E{Key: "menu_id", Value: menu.ID})
 		}
 
 		food.UpdatedAt = time.Now()
-		updateObj = append(updateObj, bson.E{Key: "updatedAt", Value: food.UpdatedAt})
+		updateObj = append(updateObj, bson.E{Key: "updated_at", Value: food.UpdatedAt})
 
 		opt := options.UpdateOne().SetUpsert(true)
 
